@@ -3,6 +3,7 @@ package cc.aoeiuv020.iamnotdisabled.hook;
 import android.content.ContentResolver;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
 import java.util.Collections;
@@ -43,15 +44,18 @@ public class MainHook implements IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (throwable.getStackTrace().length >= 3) {
             StackTraceElement stackTraceElement = throwable.getStackTrace()[3];
             String elementInfo = stackTraceElement.toString();
+
             if (elementInfo.startsWith("LSPHooker_")) {
                 stackTraceElement = throwable.getStackTrace()[4];
             }
             if (elementInfo.contains("proceed(r8-map-id-")) {
                 stackTraceElement = throwable.getStackTrace()[5];
             }
+
             return stackTraceElement.getClassName().startsWith("android.")
                     || stackTraceElement.getClassName().startsWith("androidx.")
                     || stackTraceElement.getClassName().startsWith("com.android.")
+                    || stackTraceElement.getClassName().startsWith("com.tencent.smtt.webkit.")
                     || stackTraceElement.getClassName().startsWith("org.chromium.content.browser.");
         }
         return false;
